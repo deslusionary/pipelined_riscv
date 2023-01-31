@@ -1,5 +1,5 @@
 build/
-formal/output/*
+formal/output/
 
 ### Linux ###
 *~

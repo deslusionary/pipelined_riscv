@@ -1,0 +1,15 @@
+[options]
+mode prove
+vcd on
+
+[engines]
+smtbmc --progress
+
+[script]
+read -sv -formal -DFORMAL otter_alu_onehot.sv 
+prep -top otter_alu
+
+[files]
+# filepaths given relative to directory which SBY is called from,
+# which is the top level project directory where the Makefile lives
+./src/rtl/otter_alu_onehot.sv
