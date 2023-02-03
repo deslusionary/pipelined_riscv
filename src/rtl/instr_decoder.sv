@@ -4,7 +4,7 @@
 // Date: 2022-01-31
 //
 // Description:
-// 	Instruction decode module for 5-stage in-order
+// 	Opcode decoder for 5-stage in-order
 // RV32I pipeline
 ///////////////////////////////////////////////
 
