@@ -8,7 +8,7 @@
 // RV32I pipeline
 ///////////////////////////////////////////////
 
-`default_nettype none
+//`default_nettype none
 `include "util.sv"
 `include "instr_formats.svh"
 
