@@ -42,7 +42,7 @@ typedef struct packed {
 typedef struct packed {
     //// Instruction State ////
     logic          instr_valid;
-    logic [31:0]   pc;
+    //logic [31:0]   pc;
     logic [31:0]   pc_plus_four;
     //logic opcode_t instr_opcode;
     logic [2:0]    func3; // Used by LSU
@@ -61,7 +61,28 @@ typedef struct packed {
     logic       reg_wr_en;
     logic [1:0] reg_wr_sel;
     logic [4:0] reg_wr_addr;
-} id_ex_reg_t;
+} id_ex_reg_t;                // TODO: forwarding support
+
+
+typedef struct packed {
+    logic instr_valid;
+    // logic [31:0] pc; // is PC really needed past this point?
+    logic [31:0] pc_plus_four;
+    
+    // ALU
+    logic [31:0] alu_result;
+    // LSU
+    logic        dmem_rd_en;
+    logic        dmem_wr_en;
+    logic [31:0] dmem_data;
+    logic [1:0]  dmem_size;
+    logic        dmem_sign;
+
+    logic        reg_wr_en;
+    logic [1:0]  reg_wr_sel;
+    logic [4:0]  reg_wr_addr;
+} ex_ma_reg_t;                // TODO: state signals needed for forwarding
+
 
 //////////////////////////////
 ///* RISCV Instruction Decode Utility Types /*
