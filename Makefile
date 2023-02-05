@@ -1,5 +1,5 @@
 ############
-# Makefile
+# Filename: Makefile
 # Author: Christopher Tinker
 # Date: 2022/01/19
 # 
@@ -15,10 +15,11 @@ LINT_OPTIONS += --lint-only -sv -Wall -I$(INCLUDE_DIR)
 
 SRC_FILES := $(wildcard $(SRC_DIR)/*.sv)
 INCLUDE_FILES := $(wildcard $(INCLUDE_DIR)/*.svh)
-TOP_MODULE := riscv_core.sv
+TOP_MODULE := core_riscv
 
-# Filter out a file we don't want linted / compiled
-SRC_FILES := $(filter-out $(SRC_DIR)/bram_dualport.sv $(SRC_DIR)/old_dcdr.sv, $(SRC_FILES))
+# Filter out a file we don't want linted
+SRC_FILES := $(filter-out $(SRC_DIR)/bram_dualport.sv \
+	, $(SRC_FILES))
 
 .PHONY: formal
 formal:
