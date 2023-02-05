@@ -11,6 +11,7 @@
 
 //`default_nettype none
 `include "util.sv"
+`include "instr_formats.svh"
 
 module stage_decode (
         input             clk,
@@ -59,6 +60,11 @@ module stage_decode (
     logic [31:0] b_type_imm;
     logic [31:0] rs1_i_imm_sum;
     logic        instr_branch;
+
+    logic        br_eq;
+    logic        br_lt;
+    logic        br_ltu;
+    logic        branch_cond_true;
     
     /* Instruction Decode */
     instr_decoder riscv_decoder (
@@ -99,14 +105,26 @@ module stage_decode (
     assign rs1_i_imm_sum = data_rs1_i + i_type_imm;
     assign jalr_addr_o   = {rs1_i_imm_sum[31:1], 1'b0};
 
-    /* Branch condition generation */
+    /* Branch Condition Generation */
+    assign br_eq  = (data_rs1_i == data_rs2_i);
+    assign br_lt  = ($signed(data_rs1_i) < $signed(data_rs2_i));
+    assign br_ltu = (data_rs1_i < data_rs2_i);
+
     always_comb begin
-        branch_taken_o = 1'b0;
+        
+        // Determine if branch condition is true
+        case (instr_i[14:12])  // func3 field - instr[14:12]
+            `BEQ:  branch_cond_true = br_eq;
+            `BNE:  branch_cond_true = ~br_eq;
+            `BLT:  branch_cond_true = br_lt;
+            `BGE:  branch_cond_true = ~br_lt;
+            `BLTU: branch_cond_true = br_ltu;
+            `BGEU: branch_cond_true = ~br_ltu;
 
-////        case (instr_i[14:12])
-////        endcase
-
-//        // if instr_branch and branch condition is true then assert branch_taken_o
+            default: branch_cond_true = 1'b0; // TODO: throw exception
+        endcase
+        // Take the branch if instruction is a branch, and the branch condition is true
+        branch_taken_o = (instr_branch && branch_cond_true) ? 1'b1 : 1'b0;
     end
     
 
@@ -129,8 +147,6 @@ module stage_decode (
         endcase
     end
 
-
-    
 
     /* ID-EX Pipeline Register */ 
     always_comb begin
@@ -156,9 +172,7 @@ module stage_decode (
         
         id_ex_n.reg_wr_en   = reg_wr_en;
         id_ex_n.reg_wr_sel  = reg_wr_sel;
-        id_ex_n.reg_wr_addr = instr_i[11:7];
-        
-        
+        id_ex_n.reg_wr_addr = instr_i[11:7];    
     end
 
     always_ff @(posedge clk) begin
