@@ -27,7 +27,7 @@ module stage_ex (
     logic [31:0] alu_result;
 
     /* ALU */
-    alu ALU (
+    alu_onehot ALU (
         .op1_i        (id_ex_i.alu_op1),
         .op2_i        (id_ex_i.alu_op2),
         .alu_fun_i    (id_ex_i.alu_fun),

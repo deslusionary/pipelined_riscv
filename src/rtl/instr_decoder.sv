@@ -24,7 +24,7 @@ module instr_decoder (
         output logic [1:0]  alu_op2_sel_o, // ALU operand 2 selection (before forwarding)
         
         // Register File Control
-        output logic reg_wr_en_o,        // WB-stage register file write enable
+        output logic       reg_wr_en_o,  // WB-stage register file write enable
         output logic [1:0] reg_wr_sel_o, // Register file write data selection control
         
         // DMEM/LSU Control - TEMP until AXI-Lite implemented
@@ -53,6 +53,9 @@ module instr_decoder (
         reg_wr_sel_o   = '0;
         dmem_rd_en_o   = 1'b0;
         dmem_wr_en_o   = 1'b0;
+        instr_jalr_o   = 1'b0;
+        instr_jal_o    = 1'b0;
+        instr_branch_o = 1'b0;
         
         unique case (opcode_i)
             `LUI: begin                
@@ -190,6 +193,9 @@ module instr_decoder (
 
         // Assert that dmem_wr_en and dmem_rd_en are never asserted together
         dmem_en_concurrency: assert(!(dmem_rd_en && dmem_wr_en));
+        
+        // Assert that only one of instr_jalr, instr_jal, and instr_branch is asserted
+        instr_type_concurrency: assert($onehot0({instr_jal_o, instr_jalr_o, instr_branch_o}));
     end
 `endif
 

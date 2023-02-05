@@ -15,7 +15,7 @@
 
 `include "util.sv"
 
-module alu (
+module alu_onehot (
         input [31:0] op1_i,
         input [31:0] op2_i,
         input [10:0] alu_fun_i,

@@ -1,5 +1,10 @@
 build/
-formal/output/
+formal/output/*
+docs/
+
+//Vivado files
+vivado_pid*.str 
+*.log
 
 ### Linux ###
 *~
@@ -40,6 +45,7 @@ formal/output/
 ##	VIVADO
 #Source files:
 #Do NOT ignore VHDL, Verilog, block diagrams or EDIF files.
+.Xil
 !*.vhd
 !*.v
 !*.sv
@@ -66,16 +72,16 @@ formal/output/
 !*.bxml
 #Simulation logic analyzer
 !*.wcfg
-!*.coe
+#!*.coe
 #MIG
-!*.prj
+#!*.prj
 !*.mem
 #Project files
 #XPR  +  *.XML ? XPR (Files are merged into a single XPR file for 2014.1 version)
 #Do NOT ignore *.xpr files
-!*.xpr
+#!*.xpr
 #Include *.xml files for 2013.4 or earlier version
-!*.xml
+#!*.xml
 #Constraint files
 #Do NOT ignore *.xdc files
 !*.xdc
@@ -84,8 +90,8 @@ formal/output/
 #Journal - files
 *.jou
 #Reports
-*.rpt
-!*.txt
+#*.rpt
+#!*.txt
 *.vdi
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,vivado,visualstudiocode

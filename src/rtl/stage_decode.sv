@@ -98,21 +98,21 @@ module stage_decode (
     assign jalr_addr_o   = data_rs1_i + i_type_imm;
 
     /* Branch condition generation */
-//    always_comb begin
-//        branch_taken_o = 1'b0;
+    always_comb begin
+        branch_taken_o = 1'b0;
 
 ////        case (instr_i[14:12])
 ////        endcase
 
 //        // if instr_branch and branch condition is true then assert branch_taken_o
-//    end
+    end
     
 
     /* Select ALU Operand 1 */
     always_comb begin
         unique case (alu_op1_sel)
-            1'b0: id_ex_n.alu_op1 = data_rs1_i;
-            1'b1: id_ex_n.alu_op1 = u_type_imm;
+            1'b0: id_ex_n.alu_op1 = data_rs1_i; // Register rs1
+            1'b1: id_ex_n.alu_op1 = u_type_imm; // U-type immediate
         endcase
     end
 
@@ -120,10 +120,10 @@ module stage_decode (
     /* Select ALU Operand 2 */
     always_comb begin
         unique case (alu_op2_sel)
-            2'b00: id_ex_n.alu_op2 = data_rs2_i;
-            2'b01: id_ex_n.alu_op2 = i_type_imm;
-            2'b10: id_ex_n.alu_op2 = s_type_imm;
-            2'b11: id_ex_n.alu_op2 = if_id_i.pc;
+            2'b00: id_ex_n.alu_op2 = data_rs2_i; // Register rs2
+            2'b01: id_ex_n.alu_op2 = i_type_imm; // I type immediate
+            2'b10: id_ex_n.alu_op2 = s_type_imm; // S type immediate
+            2'b11: id_ex_n.alu_op2 = if_id_i.pc; // Instruction program counter
         endcase
     end
 
@@ -161,8 +161,10 @@ module stage_decode (
         if (rst_i) id_ex_r.instr_valid <= '0; // invalidate instruction on reset
 
         else if (!stall_i) begin
-            id_ex_reg_o <= id_ex_n;
+            id_ex_r <= id_ex_n;
         end
     end
+
+    assign id_ex_reg_o = id_ex_r;
     
 endmodule
