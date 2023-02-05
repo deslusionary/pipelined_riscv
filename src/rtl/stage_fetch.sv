@@ -63,10 +63,12 @@ module stage_fetch(
             pc_r <= pc_n; // TODO: anything else that would stop PC from loading next value? WFI?
     end
     
+    
     /* Instruction fetch control */
     assign imem_addr = pc_r;
     assign imem_rd_en = 1'b1; // Can this signal stay asserted? Always be fetchin'?
     
+
     /* IF-ID Pipeline Register */
     always_comb begin
         if_id_n.instr_valid = (!squash_i) ? 1'b1 : 1'b0;

@@ -83,6 +83,15 @@ typedef struct packed {
     logic [4:0]  reg_wr_addr;
 } ex_ma_reg_t;                // TODO: state signals needed for forwarding
 
+typedef struct packed {
+    logic        instr_valid;
+    logic [31:0] pc_plus_four;
+    logic [31:0] alu_result;
+    logic        reg_wr_en;
+    logic [1:0]  reg_wr_sel;
+    logic [4:0]  reg_wr_addr;
+} ma_wb_reg_t;
+
 
 //////////////////////////////
 ///* RISCV Instruction Decode Utility Types /*

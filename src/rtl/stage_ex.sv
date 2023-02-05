@@ -40,7 +40,8 @@ module stage_ex (
 
     /* EX-MA Pipeline Register */
     always_comb begin
-        // Generate instr_valid signal
+        // Instruction in EX is valid if it was valid in previous stage 
+        // and not squashed by hazard unit in EX stage
         if (id_ex_i.instr_valid && !squash_i) begin
             ex_ma_n.instr_valid = 1'b1;
         end
@@ -53,7 +54,8 @@ module stage_ex (
         
         // Memory Access Signals
         ex_ma_n.dmem_data  = id_ex_i.dmem_data;
-        ex_ma_n.dmem_wr_en = id_ex_i.dmem_wr_en;
+        // Don't write to memory if instruction gets squashed
+        ex_ma_n.dmem_wr_en = id_ex_i.dmem_wr_en; // TODO: properly squash signals
         ex_ma_n.dmem_rd_en = id_ex_i.dmem_rd_en;
         ex_ma_n.dmem_size  = id_ex_i.func3[1:0];
         ex_ma_n.dmem_sign  = id_ex_i.func3[2];
