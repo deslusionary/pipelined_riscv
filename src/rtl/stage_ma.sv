@@ -7,6 +7,8 @@
 //  Memory Access stage for RV32I 5-stage pipeline
 ///////////////////////////////////////////////
 
+`include "util.sv"
+
 module stage_ma (
     input logic        clk,
     input logic        rst_i,
@@ -23,10 +25,8 @@ module stage_ma (
     always_comb begin
         // Instruction valid only if previously valid and not squashed by 
         // hazard unit in current stage
-        if (ex_ma_i.instr_valid && !squash_i) begin
-            ma_wb_n.instr_valid = 1'b1;
-        end
-        else ma_wb_n.instr_valid = 1'b0;
+        if (squash_i) ma_wb_n.instr_valid = 1'b0;
+        else          ma_wb_n.instr_valid = ex_ma_i.instr_valid;
 
         ma_wb_n.pc_plus_four = ex_ma_i.pc_plus_four;
         ma_wb_n.alu_result   = ex_ma_i.alu_result;
@@ -45,7 +45,8 @@ module stage_ma (
 
     assign ma_wb_reg_o = ma_wb_r;
 
-    // Stop Verilator from complaining about the damn unused signals
+// Stop Verilator from complaining about the damn unused signals
+`ifdef VERILATOR
     wire _unused = &{
         1'b0, 
         ex_ma_i.dmem_data, 
@@ -53,5 +54,6 @@ module stage_ma (
         ex_ma_i.dmem_wr_en,
         ex_ma_i.dmem_size,
         ex_ma_i.dmem_sign};
+`endif
     
 endmodule

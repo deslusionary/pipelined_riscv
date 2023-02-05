@@ -36,17 +36,21 @@ module stage_ex (
 
     /* Load-Store Unit */
     // This will be AXI (or something else) on the next revision
-    // For now, all load-store signals are generated in decode
+    // For now, all load-store signals are generated in ID stage
 
     /* EX-MA Pipeline Register */
     always_comb begin
         // Instruction in EX is valid if it was valid in previous stage 
-        // and not squashed by hazard unit in EX stage
-        if (id_ex_i.instr_valid && !squash_i) begin
-            ex_ma_n.instr_valid = 1'b1;
+        // and not squashed by hazard unit while in EX stage
+        if (squash_i) begin
+            ex_ma_n.instr_valid = 1'b0;
+            ex_ma_n.dmem_wr_en  = 1'b0;
         end
 
-        else ex_ma_n.instr_valid = 1'b0;
+        else begin
+            ex_ma_n.instr_valid = id_ex_i.instr_valid;
+            ex_ma_n.dmem_wr_en  = id_ex_i.dmem_wr_en;
+        end
 
         // Pass through signals headed to downstream stages
         ex_ma_n.pc_plus_four = id_ex_i.pc_plus_four;
@@ -54,8 +58,6 @@ module stage_ex (
         
         // Memory Access Signals
         ex_ma_n.dmem_data  = id_ex_i.dmem_data;
-        // Don't write to memory if instruction gets squashed
-        ex_ma_n.dmem_wr_en = id_ex_i.dmem_wr_en; // TODO: properly squash signals
         ex_ma_n.dmem_rd_en = id_ex_i.dmem_rd_en;
         ex_ma_n.dmem_size  = id_ex_i.func3[1:0];
         ex_ma_n.dmem_sign  = id_ex_i.func3[2];

@@ -36,8 +36,8 @@ module stage_decode (
         output logic        instr_jalr_o, // Load PC with JALR target address
         output logic        branch_taken_o, // Asserted if branch is taken
         output logic [31:0] jal_addr_o,
-        output logic [31:0] branch_addr_o,
-        output logic [31:0] jalr_addr_o
+        output logic [31:0] jalr_addr_o,
+        output logic [31:0] branch_addr_o
     );
 
     // Signals passed to downstream stages
@@ -57,6 +57,7 @@ module stage_decode (
     logic [31:0] s_type_imm;
     logic [31:0] j_type_imm;
     logic [31:0] b_type_imm;
+    logic [31:0] rs1_i_imm_sum;
     logic        instr_branch;
     
     /* Instruction Decode */
@@ -95,7 +96,8 @@ module stage_decode (
     /* Branch/JAL/JALR Target Address Generation */
     assign branch_addr_o = if_id_i.pc + b_type_imm;
     assign jal_addr_o    = if_id_i.pc + j_type_imm;
-    assign jalr_addr_o   = data_rs1_i + i_type_imm;
+    assign rs1_i_imm_sum = data_rs1_i + i_type_imm;
+    assign jalr_addr_o   = {rs1_i_imm_sum[31:1], 1'b0};
 
     /* Branch condition generation */
     always_comb begin
@@ -128,19 +130,22 @@ module stage_decode (
     end
 
 
-    /* Instruction Squash Control */
-    // Add illegal instruction detection to this in future
-    always_comb begin
-        if (if_id_i.instr_valid && !squash_i) begin
-            id_ex_n.instr_valid = 1'b1;
-        end
-
-        else id_ex_n.instr_valid = 1'b0;
-    end
     
 
     /* ID-EX Pipeline Register */ 
     always_comb begin
+        /* Instruction Squash Control */
+        // Add illegal instruction detection to this in future
+        if (squash_i) begin
+            id_ex_n.instr_valid = 1'b0;
+            id_ex_n.dmem_wr_en  = 1'b0;
+        end
+
+        else begin
+            id_ex_n.instr_valid = if_id_i.instr_valid;
+            id_ex_n.dmem_wr_en  = dmem_wr_en;
+        end
+
         //id_ex_n.pc = if_id_i.pc; // Do later stages need PC? Don't think so
         id_ex_n.pc_plus_four = if_id_i.pc_plus_four;
         id_ex_n.func3       = instr_i[14:12]; // func3
@@ -148,7 +153,6 @@ module stage_decode (
         id_ex_n.alu_fun     = alu_fun;
         id_ex_n.dmem_data   = data_rs2_i;
         id_ex_n.dmem_rd_en  = dmem_rd_en;
-        id_ex_n.dmem_wr_en  = dmem_wr_en;
         
         id_ex_n.reg_wr_en   = reg_wr_en;
         id_ex_n.reg_wr_sel  = reg_wr_sel;
@@ -166,5 +170,10 @@ module stage_decode (
     end
 
     assign id_ex_reg_o = id_ex_r;
+
+// Suppress Verilator warnings about intentionally unused signals
+`ifdef VERILATOR
+    wire _unused = &{1'b0, rs1_i_imm_sum[0]};
+`endif
     
 endmodule

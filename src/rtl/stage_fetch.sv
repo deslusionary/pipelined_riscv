@@ -27,8 +27,8 @@ module stage_fetch(
         
     // Instruction Fetch Interface
     // Instruction data (MEM_DOUT1 port on RAM) connected directly to ID stage
-    output logic [31:0] imem_addr,
-    output logic        imem_rd_en,    
+    output logic [31:0] imem_addr_o,
+    output logic        imem_rd_en_o,    
         
     // IF-ID pipeline register
     output if_id_reg_t  if_id_reg_o  
@@ -63,15 +63,16 @@ module stage_fetch(
             pc_r <= pc_n; // TODO: anything else that would stop PC from loading next value? WFI?
     end
     
-    
+
     /* Instruction fetch control */
-    assign imem_addr = pc_r;
-    assign imem_rd_en = 1'b1; // Can this signal stay asserted? Always be fetchin'?
+    assign imem_addr_o = pc_r;
+    assign imem_rd_en_o = 1'b1; // Can this signal stay asserted? Always be fetchin'?
     
 
     /* IF-ID Pipeline Register */
     always_comb begin
-        if_id_n.instr_valid = (!squash_i) ? 1'b1 : 1'b0;
+        // This will need updating to support I$ or memory errors!
+        if_id_n.instr_valid = (squash_i) ? 1'b0 : 1'b1;
         if_id_n.pc = pc_r;
         if_id_n.pc_plus_four = pc_plus_four;
     end
