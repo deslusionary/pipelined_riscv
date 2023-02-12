@@ -81,13 +81,17 @@ module instr_decoder (
             end
             
             `JALR: begin
-                instr_jalr_o = 1'b1;                
-                reg_wr_en_o  = 1'b1;
-                reg_wr_sel_o = 2'b10; // PC + 4     
+                instr_jalr_o  =  1'b1;                
+                reg_wr_en_o   =  1'b1;
+                reg_wr_sel_o  =  2'b10; // PC + 4   
+                alu_op1_sel_o = 1'b0;  // RS1  
+                alu_op2_sel_o = 2'b01; // I-type Immediate
             end
             
             `BRANCH: begin
                 instr_branch_o = 1'b1;
+                alu_op1_sel_o  = 1'b0;
+                alu_op2_sel_o  = 2'b00;
                 
                 // Pass func3 to EX unmodified?
                 // Depends on where branch condition is generated

@@ -34,11 +34,7 @@ module stage_decode (
         // NON-REGISTERED OUTPUTS
         // Control flow signals for IF stage PC control
         output logic        instr_jal_o, // Tell IF to load PC with JAL target address
-        output logic        instr_jalr_o, // Load PC with JALR target address
-        output logic        branch_taken_o, // Asserted if branch is taken
-        output logic [31:0] jal_addr_o,
-        output logic [31:0] jalr_addr_o,
-        output logic [31:0] branch_addr_o
+        output logic [31:0] jal_addr_o
     );
 
     // Signals passed to downstream stages
@@ -58,13 +54,9 @@ module stage_decode (
     logic [31:0] s_type_imm;
     logic [31:0] j_type_imm;
     logic [31:0] b_type_imm;
-    logic [31:0] rs1_i_imm_sum;
     logic        instr_branch;
-
-    logic        br_eq;
-    logic        br_lt;
-    logic        br_ltu;
-    logic        branch_cond_true;
+    logic        instr_jalr;
+    logic [31:0] branch_addr;
     
     /* Instruction Decode */
     instr_decoder riscv_decoder (
@@ -86,7 +78,7 @@ module stage_decode (
         .dmem_wr_en_o   (dmem_wr_en),
 
         // PC Control
-        .instr_jalr_o   (instr_jalr_o),
+        .instr_jalr_o   (instr_jalr),
         .instr_jal_o    (instr_jal_o),
         .instr_branch_o (instr_branch)
     );
@@ -100,33 +92,8 @@ module stage_decode (
     
 
     /* Branch/JAL/JALR Target Address Generation */
-    assign branch_addr_o = if_id_i.pc + b_type_imm;
+    assign branch_addr   = if_id_i.pc + b_type_imm;
     assign jal_addr_o    = if_id_i.pc + j_type_imm;
-    assign rs1_i_imm_sum = data_rs1_i + i_type_imm;
-    assign jalr_addr_o   = {rs1_i_imm_sum[31:1], 1'b0};
-
-    /* Branch Condition Generation */
-    assign br_eq  = (data_rs1_i == data_rs2_i);
-    assign br_lt  = ($signed(data_rs1_i) < $signed(data_rs2_i));
-    assign br_ltu = (data_rs1_i < data_rs2_i);
-
-    always_comb begin
-        
-        // Determine if branch condition is true
-        case (instr_i[14:12])  // func3 field - instr[14:12]
-            `BEQ:  branch_cond_true = br_eq;
-            `BNE:  branch_cond_true = ~br_eq;
-            `BLT:  branch_cond_true = br_lt;
-            `BGE:  branch_cond_true = ~br_lt;
-            `BLTU: branch_cond_true = br_ltu;
-            `BGEU: branch_cond_true = ~br_ltu;
-
-            default: branch_cond_true = 1'b0; // TODO: throw exception
-        endcase
-        // Take the branch if instruction is a branch, and the branch condition is true
-        branch_taken_o = (instr_branch && branch_cond_true) ? 1'b1 : 1'b0;
-    end
-    
 
     /* Select ALU Operand 1 */
     always_comb begin
@@ -162,17 +129,19 @@ module stage_decode (
             id_ex_n.dmem_wr_en  = dmem_wr_en;
         end
 
-        //id_ex_n.pc = if_id_i.pc; // Do later stages need PC? Don't think so
         id_ex_n.pc_plus_four = if_id_i.pc_plus_four;
-        id_ex_n.func3       = instr_i[14:12]; // func3
+        id_ex_n.func3        = instr_i[14:12]; // func3
 
-        id_ex_n.alu_fun     = alu_fun;
-        id_ex_n.dmem_data   = data_rs2_i;
-        id_ex_n.dmem_rd_en  = dmem_rd_en;
+        id_ex_n.alu_fun      = alu_fun;
+        id_ex_n.dmem_data    = data_rs2_i;
+        id_ex_n.dmem_rd_en   = dmem_rd_en;
+        id_ex_n.instr_branch = instr_branch;
+        id_ex_n.instr_jalr   = instr_jalr;
+        id_ex_n.branch_addr  = branch_addr;
         
-        id_ex_n.reg_wr_en   = reg_wr_en;
-        id_ex_n.reg_wr_sel  = reg_wr_sel;
-        id_ex_n.reg_wr_addr = instr_i[11:7];    
+        id_ex_n.reg_wr_en    = reg_wr_en;
+        id_ex_n.reg_wr_sel   = reg_wr_sel;
+        id_ex_n.reg_wr_addr  = instr_i[11:7];    
     end
 
     always_ff @(posedge clk) begin
@@ -187,7 +156,6 @@ module stage_decode (
 
 // Suppress Verilator warnings about intentionally unused signals
 `ifdef VERILATOR
-    wire _unused = &{1'b0, rs1_i_imm_sum[0]};
 `endif
     
 endmodule

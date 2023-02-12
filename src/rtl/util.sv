@@ -42,10 +42,8 @@ typedef struct packed {
 typedef struct packed {
     //// Instruction State ////
     logic          valid;
-    //logic [31:0]   pc;
     logic [31:0]   pc_plus_four;
-    //logic opcode_t instr_opcode;
-    logic [2:0]    func3; // Used by LSU
+    logic [2:0]    func3;
     
     //// EXECUTE ////
     // ALU
@@ -56,6 +54,10 @@ typedef struct packed {
     logic        dmem_rd_en;
     logic        dmem_wr_en;
     logic [31:0] dmem_data;
+    // BCG
+    logic        instr_branch;
+    logic        instr_jalr;
+    logic [31:0] branch_addr;
     
     //// WRITEBACK ////
     logic       reg_wr_en;

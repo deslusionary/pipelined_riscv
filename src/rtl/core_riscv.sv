@@ -90,11 +90,7 @@ module core_riscv (
 
         .id_ex_reg_o    (id_ex_reg),  // ID-EX pipeline register
         .instr_jal_o    (instr_jal),
-        .instr_jalr_o   (instr_jalr),
-        .branch_taken_o (branch_taken),
-        .jal_addr_o     (jal_addr),
-        .jalr_addr_o    (jalr_addr),
-        .branch_addr_o  (branch_addr)
+        .jal_addr_o     (jal_addr)
     );
 
 
@@ -103,13 +99,17 @@ module core_riscv (
     ///////////////////////////////
 
     stage_ex ex (
-        .clk         (clk),
-        .rst_i       (rst_i),
-        .stall_i     (1'b0),
-        .squash_i    (1'b0),
-        .id_ex_i     (id_ex_reg), // ID-EX pipeline register
+        .clk            (clk),
+        .rst_i          (rst_i),
+        .stall_i        (1'b0),
+        .squash_i       (1'b0),
+        .id_ex_i        (id_ex_reg), // ID-EX pipeline register
 
-        .ex_ma_reg_o (ex_ma_reg)  // EX-MA pipeline register
+        .ex_ma_reg_o    (ex_ma_reg),  // EX-MA pipeline register
+        .instr_jalr_o   (instr_jalr),
+        .branch_taken_o (branch_taken),
+        .jalr_addr_o    (jalr_addr),
+        .branch_addr_o  (branch_addr)
     );
 
     

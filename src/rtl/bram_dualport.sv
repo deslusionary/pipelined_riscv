@@ -18,7 +18,10 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-                                                                                                                     //func3
+                                                                                                
+`define MEM_FILE "memory.mem"
+
+
  module bram_dualport (
         MEM_CLK, 
         MEM_ADDR1,
@@ -72,7 +75,7 @@
     (* ram_decomp = "power" *) logic [31:0] memory [0:2**ACTUAL_WIDTH-1];
     
     initial begin
-        $readmemh("memory.mem", memory, 0, 2**ACTUAL_WIDTH-1);
+        $readmemh(`MEM_FILE, memory, 0, 2**ACTUAL_WIDTH-1);
     end 
     
 

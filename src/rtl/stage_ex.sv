@@ -15,16 +15,19 @@ module stage_ex (
     input rst_i,
     input squash_i,
     input stall_i,
-
-    // ID Stage inputs
     input id_ex_reg_t id_ex_i,
 
     // EX-MA Stage Pipeline Register
-    output ex_ma_reg_t ex_ma_reg_o
+    output ex_ma_reg_t  ex_ma_reg_o,
+    output logic        instr_jalr_o,
+    output logic        branch_taken_o,
+    output logic [31:0] jalr_addr_o,
+    output logic [31:0] branch_addr_o
     );
 
     ex_ma_reg_t ex_ma_r, ex_ma_n;
     logic [31:0] alu_result;
+    logic [31:0] rs1_i_imm_sum; // Intermediate step for JALR address
 
     /* ALU */
     alu_onehot ALU (
@@ -34,9 +37,24 @@ module stage_ex (
         .result_o (alu_result)
     );
 
-    /* Load-Store Unit */
-    // This will be AXI (or something else) on the next revision
-    // For now, all load-store signals are generated in ID stage
+
+    /* Branch Condition Generation */
+    branch_cond_gen bcg (
+        .data_rs1_i     (id_ex_i.alu_op1),
+        .data_rs2_i     (id_ex_i.alu_op2),
+        .func3_i        (id_ex_i.func3),
+        .instr_branch_i (id_ex_i.instr_branch),
+        .branch_taken_o (branch_taken_o)
+    );
+
+
+    // Branch Address Generation
+    assign branch_addr_o = id_ex_i.branch_addr;
+    // JALR Control
+    assign rs1_i_imm_sum = id_ex_i.alu_op1 + id_ex_i.alu_op2;
+    assign jalr_addr_o   = {rs1_i_imm_sum[31:1], 1'b0};
+    assign instr_jalr_o  = id_ex_i.instr_jalr;
+
 
     /* EX-MA Pipeline Register */
     always_comb begin
@@ -78,4 +96,10 @@ module stage_ex (
     end
 
     assign ex_ma_reg_o = ex_ma_r;
+
+// Suppress unused signal warnings
+`ifdef VERILATOR
+    wire _unused = &{1'b0, rs1_i_imm_sum[0]};
+`endif
+
 endmodule
