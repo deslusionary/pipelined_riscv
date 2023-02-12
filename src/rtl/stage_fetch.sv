@@ -72,13 +72,13 @@ module stage_fetch(
     /* IF-ID Pipeline Register */
     always_comb begin
         // This will need updating to support I$ or memory errors!
-        if_id_n.instr_valid = (squash_i) ? 1'b0 : 1'b1;
+        if_id_n.valid = (squash_i) ? 1'b0 : 1'b1;
         if_id_n.pc = pc_r;
         if_id_n.pc_plus_four = pc_plus_four;
     end
     
     always_ff @(posedge clk) begin
-        if (rst_i) if_id_r.instr_valid <= 1'b0; // handle resets by invalidating current instruction
+        if (rst_i) if_id_r.valid <= 1'b0; // handle resets by invalidating current instruction
         
         else if (!stall_i) begin
             if_id_r <= if_id_n;

@@ -153,12 +153,12 @@ module stage_decode (
         /* Instruction Squash Control */
         // Add illegal instruction detection to this in future
         if (squash_i) begin
-            id_ex_n.instr_valid = 1'b0;
+            id_ex_n.valid = 1'b0;
             id_ex_n.dmem_wr_en  = 1'b0;
         end
 
         else begin
-            id_ex_n.instr_valid = if_id_i.instr_valid;
+            id_ex_n.valid = if_id_i.valid;
             id_ex_n.dmem_wr_en  = dmem_wr_en;
         end
 
@@ -176,7 +176,7 @@ module stage_decode (
     end
 
     always_ff @(posedge clk) begin
-        if (rst_i) id_ex_r.instr_valid <= '0; // invalidate instruction on reset
+        if (rst_i) id_ex_r.valid <= '0; // invalidate instruction on reset
 
         else if (!stall_i) begin
             id_ex_r <= id_ex_n;

@@ -33,7 +33,7 @@
 
 // Fetch - DECODE Pipeline Register
 typedef struct packed {
-    logic instr_valid;
+    logic        valid;
     logic [31:0] pc;
     logic [31:0] pc_plus_four;
 } if_id_reg_t;
@@ -41,7 +41,7 @@ typedef struct packed {
 // DECODE - EXECUTE Pipeline Register
 typedef struct packed {
     //// Instruction State ////
-    logic          instr_valid;
+    logic          valid;
     //logic [31:0]   pc;
     logic [31:0]   pc_plus_four;
     //logic opcode_t instr_opcode;
@@ -65,7 +65,7 @@ typedef struct packed {
 
 
 typedef struct packed {
-    logic instr_valid;
+    logic valid;
     // logic [31:0] pc; // is PC really needed past this point?
     logic [31:0] pc_plus_four;
     
@@ -84,7 +84,7 @@ typedef struct packed {
 } ex_ma_reg_t;                // TODO: state signals needed for forwarding
 
 typedef struct packed {
-    logic        instr_valid;
+    logic        valid;
     logic [31:0] pc_plus_four;
     logic [31:0] alu_result;
     logic        reg_wr_en;

@@ -25,8 +25,8 @@ module stage_ma (
     always_comb begin
         // Instruction valid only if previously valid and not squashed by 
         // hazard unit in current stage
-        if (squash_i) ma_wb_n.instr_valid = 1'b0;
-        else          ma_wb_n.instr_valid = ex_ma_i.instr_valid;
+        if (squash_i) ma_wb_n.valid = 1'b0;
+        else          ma_wb_n.valid = ex_ma_i.valid;
 
         ma_wb_n.pc_plus_four = ex_ma_i.pc_plus_four;
         ma_wb_n.alu_result   = ex_ma_i.alu_result;
@@ -36,7 +36,7 @@ module stage_ma (
     end
 
     always_ff @(posedge clk) begin
-        if (rst_i) ma_wb_r.instr_valid <= 1'b0;
+        if (rst_i) ma_wb_r.valid <= 1'b0;
 
         else if (!stall_i) begin
             ma_wb_r <= ma_wb_n;

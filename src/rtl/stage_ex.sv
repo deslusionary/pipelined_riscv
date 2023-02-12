@@ -43,12 +43,12 @@ module stage_ex (
         // Instruction in EX is valid if it was valid in previous stage 
         // and not squashed by hazard unit while in EX stage
         if (squash_i) begin
-            ex_ma_n.instr_valid = 1'b0;
+            ex_ma_n.valid = 1'b0;
             ex_ma_n.dmem_wr_en  = 1'b0;
         end
 
         else begin
-            ex_ma_n.instr_valid = id_ex_i.instr_valid;
+            ex_ma_n.valid = id_ex_i.valid;
             ex_ma_n.dmem_wr_en  = id_ex_i.dmem_wr_en;
         end
 
@@ -70,7 +70,7 @@ module stage_ex (
 
     always_ff @(posedge clk) begin
         // Synchronous reset invalidates current instruction
-        if (rst_i) ex_ma_r.instr_valid <= 1'b0;
+        if (rst_i) ex_ma_r.valid <= 1'b0;
 
         else if (!stall_i) begin
             ex_ma_r <= ex_ma_n;

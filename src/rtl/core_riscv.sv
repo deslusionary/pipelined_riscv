@@ -152,7 +152,7 @@ module core_riscv (
      * it must not change register file state!
      */
     // TODO: add support for hazard unit SQUASH here
-    assign wb_reg_wr_en = (ma_wb_reg.instr_valid && ma_wb_reg.reg_wr_en) ? 1'b1 : 1'b0;
+    assign wb_reg_wr_en = (ma_wb_reg.valid && ma_wb_reg.reg_wr_en) ? 1'b1 : 1'b0;
     
     assign wb_reg_wr_addr = ma_wb_reg.reg_wr_addr; // rd RISCV field - instr[11:7]
 
