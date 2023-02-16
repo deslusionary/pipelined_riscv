@@ -66,7 +66,7 @@ module core_riscv (
     logic stall_id;
     logic stall_ex;
     logic stall_ma;
-    logic stall_wb;
+    //logic stall_wb;
 
     ///////////////////////////////
     /* Instruction Fetch         */
@@ -223,7 +223,7 @@ module core_riscv (
         stall_id = 1'b0;
         stall_ex = 1'b0;
         stall_ma = 1'b0;
-        stall_wb = 1'b0;
+        //stall_wb = 1'b0;
 
         // 2 cycle JALR/BRANCH penalty
         if (instr_jalr || branch_taken) begin
@@ -236,19 +236,17 @@ module core_riscv (
             squash_if = 1'b1;
         end
 
-        // Load-use interlock
-        if ((id_ex_reg.rs1_used || id_ex_reg.rs2_used)
-            && ex_ma_reg.dmem_rd_en 
-            && ex_ma_reg.valid
-            && (ex_ma_reg.reg_wr_addr == id_ex_reg.rs1_addr 
-                || ex_ma_reg.reg_wr_addr == id_ex_reg.rs2_addr)) begin
+        // load-use interlock
+        if (((id_ex_reg.rs1_used && ex_ma_reg.reg_wr_addr == id_ex_reg.rs1_addr)
+            || (id_ex_reg.rs2_used && ex_ma_reg.reg_wr_addr == id_ex_reg.rs2_addr))
+            && ex_ma_reg.valid && ex_ma_reg.reg_wr_en
+            && ex_ma_reg.dmem_rd_en) begin
             
             stall_if  = 1'b1;
             stall_id  = 1'b1;
             squash_ex = 1'b1;
         end
 
-        // JAL-use interlock
 
     end
 

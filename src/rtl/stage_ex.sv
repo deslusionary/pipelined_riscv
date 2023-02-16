@@ -28,6 +28,7 @@ module stage_ex (
     ex_ma_reg_t ex_ma_r, ex_ma_n;
     logic [31:0] alu_result;
     logic [31:0] rs1_i_imm_sum; // Intermediate step for JALR address
+    logic        branch_taken;
 
     /* ALU */
     alu_onehot ALU (
@@ -44,16 +45,18 @@ module stage_ex (
         .data_rs2_i     (id_ex_i.alu_op2),
         .func3_i        (id_ex_i.func3),
         .instr_branch_i (id_ex_i.instr_branch),
-        .branch_taken_o (branch_taken_o)
+        .branch_taken_o (branch_taken)
     );
 
 
     // Branch Address Generation
-    assign branch_addr_o = id_ex_i.branch_addr;
-    // JALR Control
-    assign rs1_i_imm_sum = id_ex_i.alu_op1 + id_ex_i.alu_op2;
-    assign jalr_addr_o   = {rs1_i_imm_sum[31:1], 1'b0};
-    assign instr_jalr_o  = id_ex_i.instr_jalr;
+    assign branch_addr_o  = id_ex_i.branch_addr;
+    // JALR Address Generation
+    assign rs1_i_imm_sum  = id_ex_i.alu_op1 + id_ex_i.alu_op2;
+    assign jalr_addr_o    = {rs1_i_imm_sum[31:1], 1'b0};
+    // Branch/JALR Control
+    assign instr_jalr_o   = (id_ex_i.instr_jalr && id_ex_i.valid && !squash_i);
+    assign branch_taken_o = (branch_taken && id_ex_i.valid && !squash_i);
 
 
     /* EX-MA Pipeline Register */
@@ -73,6 +76,7 @@ module stage_ex (
         // Pass through signals headed to downstream stages
         ex_ma_n.pc_plus_four = id_ex_i.pc_plus_four;
         ex_ma_n.alu_result   = alu_result;
+        ex_ma_n.ex_ma_intlk  = id_ex_i.ex_ma_intlk;
         
         // Memory Access Signals
         ex_ma_n.dmem_data  = id_ex_i.dmem_data;
@@ -100,7 +104,7 @@ module stage_ex (
 // Suppress unused signal warnings
 `ifdef VERILATOR
     wire _unused = &{1'b0, rs1_i_imm_sum[0], id_ex_i.rs1_used, id_ex_i.rs2_used,
-        id_ex_i.rs1_addr, id_ex_i.rs2_addr};
+        id_ex_i.rs1_addr, id_ex_i.rs2_addr, id_ex_i.ex_ma_intlk};
 `endif
 
 endmodule

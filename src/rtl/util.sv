@@ -44,6 +44,7 @@ typedef struct packed {
     logic          valid;
     logic [31:0]   pc_plus_four;
     logic [2:0]    func3;
+    logic          ex_ma_intlk;
     
     //// EXECUTE ////
     // ALU
@@ -75,6 +76,7 @@ typedef struct packed {
     logic valid;
     // logic [31:0] pc; // is PC really needed past this point?
     logic [31:0] pc_plus_four;
+    logic        ex_ma_intlk;
     
     // ALU
     logic [31:0] alu_result;

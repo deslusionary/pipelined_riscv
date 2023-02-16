@@ -23,28 +23,47 @@ module alu_onehot (
     );
  
     // Variable instantiations
-    wire logic [31:0] alu_results [10:0];
+    // wire logic [31:0] alu_results [10:0];
 
-    // Big ol' ALU assign block
-    assign alu_results[0]  = alu_fun_i[0]  ? op1_i + op2_i : 32'b0; // ADD/ADDI
-    assign alu_results[1]  = alu_fun_i[1]  ? op1_i << op2_i[4:0]: 32'b0; // SLL/SLLI
-    assign alu_results[2]  = alu_fun_i[2]  ? {31'b0, $signed(op1_i) < $signed(op2_i)} : 32'b0;
-    assign alu_results[3]  = alu_fun_i[3]  ? {31'b0, op1_i < op2_i} : 32'b0;
-    assign alu_results[4]  = alu_fun_i[4]  ? op1_i ^ op2_i : 32'b0;
-    assign alu_results[5]  = alu_fun_i[5]  ? op1_i >> op2_i[4:0] : 32'b0;
-    assign alu_results[6]  = alu_fun_i[6]  ? op1_i | op2_i : 32'b0;
-    assign alu_results[7]  = alu_fun_i[7]  ? op1_i & op2_i : 32'b0;
-    assign alu_results[8]  = alu_fun_i[8]  ? op1_i - op2_i : 32'b0; 
-    assign alu_results[9]  = alu_fun_i[9]  ? $signed(op1_i) >>> op2_i[4:0] : 32'b0;
-    assign alu_results[10] = alu_fun_i[10]  ? op1_i : 32'b0; // LUI
+    // // Big ol' ALU assign block
+    // assign alu_results[0]  = alu_fun_i[0]  ? op1_i + op2_i : 32'b0; // ADD/ADDI
+    // assign alu_results[1]  = alu_fun_i[1]  ? op1_i << op2_i[4:0]: 32'b0; // SLL/SLLI
+    // assign alu_results[2]  = alu_fun_i[2]  ? {31'b0, signed'(op1_i) < signed'(op2_i)} : 32'b0;
+    // assign alu_results[3]  = alu_fun_i[3]  ? {31'b0, op1_i < op2_i} : 32'b0;
+    // assign alu_results[4]  = alu_fun_i[4]  ? op1_i ^ op2_i : 32'b0;
+    // assign alu_results[5]  = alu_fun_i[5]  ? op1_i >> op2_i[4:0] : 32'b0;
+    // assign alu_results[6]  = alu_fun_i[6]  ? op1_i | op2_i : 32'b0;
+    // assign alu_results[7]  = alu_fun_i[7]  ? op1_i & op2_i : 32'b0;
+    // assign alu_results[8]  = alu_fun_i[8]  ? op1_i - op2_i : 32'b0; 
+    // assign alu_results[9]  = alu_fun_i[9]  ? $signed(op1_i) >>> op2_i[4:0] : 32'b0;
+    // assign alu_results[10] = alu_fun_i[10] ? op1_i : 32'b0; // LUI
 
-    // XOR results of all ALU operations together to get correct ALU result
-    always_comb begin
-        result_o = 32'b0; // latch/combinatorial loop prevention
+    // // XOR results of all ALU operations together to get correct ALU result
+    // always_comb begin
+    //     result_o = 32'b0; // latch/combinatorial loop prevention
 
-        for (integer i = 0; i < $size(alu_results); i++) begin
-            result_o ^= alu_results[i];
-        end
+    //     for (integer i = 0; i < $size(alu_results); i++) begin
+    //         result_o ^= alu_results[i];
+    //     end
+    // end
+
+    always @(*) begin
+        case (alu_fun_i)
+            `ALU_ADD  : result_o = op1_i + op2_i; // add
+            `ALU_SUB  : result_o = op1_i - op2_i; // sub
+            `ALU_OR   : result_o = op1_i | op2_i; // or
+            `ALU_AND  : result_o = op1_i & op2_i; // and
+            `ALU_XOR  : result_o = op1_i ^ op2_i; // xor
+            `ALU_SRL  : result_o = op1_i >> op2_i[4:0]; // srl
+            `ALU_SLL  : result_o = op1_i << op2_i[4:0]; // sll
+            `ALU_SRA  : result_o = $signed(op1_i) >>> op2_i[4:0]; // sra
+            `ALU_SLT  : result_o = {31'b0, $signed(op1_i) < $signed(op2_i)}; // slt is signed
+            `ALU_SLTU : result_o = {31'b0, op1_i < op2_i}; // sltu is unsigned
+            `ALU_LUI  : result_o = op1_i; // lui
+            
+            // prevent latch generation with default case
+            default  : result_o = 32'hdead_beef;
+        endcase
     end
 
 `ifdef SIM

@@ -41,7 +41,7 @@ module core_tb (
         .dmem_size_o  (dmem_size),
         .dmem_sign_o  (dmem_sign)
     );
-
+    
     bram_dualport mem (
         .MEM_CLK    (clk),
         .MEM_ADDR1  (imem_addr),
@@ -63,10 +63,10 @@ module core_tb (
         rst = 1'b1;
         #20
         rst = 1'b0;
-        #500
+        #20000
         $finish;
     end
-
+    
     always #5 begin
         clk <= ~clk;
     end

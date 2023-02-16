@@ -66,7 +66,7 @@ module stage_fetch(
 
     /* Instruction fetch control */
     assign imem_addr_o = pc_r;
-    assign imem_rd_en_o = 1'b1; // Can this signal stay asserted? Always be fetchin'?
+    assign imem_rd_en_o = !stall_i; // Can this signal stay asserted? Always be fetchin'?
     
 
     /* IF-ID Pipeline Register */

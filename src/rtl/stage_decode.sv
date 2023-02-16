@@ -58,6 +58,7 @@ module stage_decode (
     logic [31:0] b_type_imm;
     logic        instr_branch;
     logic        instr_jalr;
+    logic        instr_jal;
     logic [31:0] branch_addr;
     
     /* Instruction Decode */
@@ -74,7 +75,7 @@ module stage_decode (
         .dmem_rd_en_o   (dmem_rd_en),
         .dmem_wr_en_o   (dmem_wr_en),
         .instr_jalr_o   (instr_jalr),
-        .instr_jal_o    (instr_jal_o),
+        .instr_jal_o    (instr_jal),
         .instr_branch_o (instr_branch),
         .rs1_used_o     (rs1_used),
         .rs2_used_o     (rs2_used)
@@ -128,6 +129,7 @@ module stage_decode (
 
         id_ex_n.pc_plus_four = if_id_i.pc_plus_four;
         id_ex_n.func3        = instr_i[14:12]; // func3
+        id_ex_n.ex_ma_intlk  = (instr_jal_o || dmem_rd_en);
 
         id_ex_n.alu_fun      = alu_fun;
         id_ex_n.dmem_data    = data_rs2_i;
@@ -150,8 +152,9 @@ module stage_decode (
         else if (!stall_i) begin
             id_ex_r <= id_ex_n;
         end
-    end
+    end 
 
+    assign instr_jal_o = (instr_jal && if_id_i.valid && !squash_i);
     assign id_ex_reg_o = id_ex_r;
 
 // Suppress Verilator warnings about intentionally unused signals

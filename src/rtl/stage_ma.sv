@@ -53,7 +53,8 @@ module stage_ma (
         ex_ma_i.dmem_rd_en,
         ex_ma_i.dmem_wr_en,
         ex_ma_i.dmem_size,
-        ex_ma_i.dmem_sign};
+        ex_ma_i.dmem_sign,
+        ex_ma_i.ex_ma_intlk};
 `endif
     
 endmodule
