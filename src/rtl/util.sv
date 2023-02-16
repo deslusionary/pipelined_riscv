@@ -58,6 +58,11 @@ typedef struct packed {
     logic        instr_branch;
     logic        instr_jalr;
     logic [31:0] branch_addr;
+    // Forwarding
+    logic        rs1_used;
+    logic        rs2_used;
+    logic [4:0]  rs1_addr;
+    logic [4:0]  rs2_addr;
     
     //// WRITEBACK ////
     logic       reg_wr_en;

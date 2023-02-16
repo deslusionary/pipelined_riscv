@@ -34,10 +34,10 @@ module instr_decoder (
         // PC Control
         output logic instr_jalr_o,
         output logic instr_jal_o,
-        output logic instr_branch_o
+        output logic instr_branch_o,
         // Forwarding control
-        //output logic rs1_used_o,
-        //output logic rs2_used_o
+        output logic rs1_used_o,
+        output logic rs2_used_o
     );
     // Operand size and sign extension for load/store instructions is always func3
     //assign dmem_size_o = func3_i[1:0];
@@ -56,6 +56,8 @@ module instr_decoder (
         instr_jalr_o   = 1'b0;
         instr_jal_o    = 1'b0;
         instr_branch_o = 1'b0;
+        rs1_used_o     = 1'b0;
+        rs2_used_o     = 1'b0;
         
         unique case (opcode_i)
             `LUI: begin                
@@ -81,20 +83,21 @@ module instr_decoder (
             end
             
             `JALR: begin
-                instr_jalr_o  =  1'b1;                
-                reg_wr_en_o   =  1'b1;
-                reg_wr_sel_o  =  2'b10; // PC + 4   
+                instr_jalr_o  = 1'b1;                
+                reg_wr_en_o   = 1'b1;
+                reg_wr_sel_o  = 2'b10; // PC + 4   
                 alu_op1_sel_o = 1'b0;  // RS1  
                 alu_op2_sel_o = 2'b01; // I-type Immediate
+                alu_fun_o     = `ALU_LUI; // Prevent ALU and JALR addr gen combining
+                rs1_used_o    = 1'b1;
             end
             
             `BRANCH: begin
                 instr_branch_o = 1'b1;
                 alu_op1_sel_o  = 1'b0;
                 alu_op2_sel_o  = 2'b00;
-                
-                // Pass func3 to EX unmodified?
-                // Depends on where branch condition is generated
+                rs1_used_o     = 1'b1;
+                rs2_used_o     = 1'b1;
             end
             
             `LOAD: begin                
@@ -106,7 +109,7 @@ module instr_decoder (
                 alu_fun_o     = `ALU_ADD;
                 alu_op1_sel_o = 1'b0; // rd_rs1
                 alu_op2_sel_o = 2'b01; // I-type immediate
-                
+                rs1_used_o    = 1'b1;      
             end
             
             `STORE:  begin                
@@ -117,6 +120,8 @@ module instr_decoder (
                 alu_fun_o     = `ALU_ADD;
                 alu_op1_sel_o = 1'b0;  // rd_rs1
                 alu_op2_sel_o = 2'b10; // S-type immediate
+                rs1_used_o    = 1'b1;
+                rs2_used_o    = 1'b1;
             end
             
             `OP_IMM: begin
@@ -124,6 +129,7 @@ module instr_decoder (
                 reg_wr_sel_o  = 2'b00; // ALU result
                 alu_op1_sel_o = 1'b0;  // rd_rs1
                 alu_op2_sel_o = 2'b01; // I-type immediate
+                rs1_used_o    = 1'b1;
                 
                 // Decode ALU function from func3 field
                 unique case (func3_i)
@@ -150,6 +156,8 @@ module instr_decoder (
                 reg_wr_sel_o  = 2'b00; // ALU result
                 alu_op1_sel_o = 1'b0;  // rd_rs1
                 alu_op2_sel_o = 2'b00; // rd_rs2
+                rs1_used_o    = 1'b1;
+                rs2_used_o    = 1'b1;
                 
                 // Decode ALU function from func3 field
                 unique case (func3_i)

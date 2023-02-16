@@ -99,7 +99,8 @@ module stage_ex (
 
 // Suppress unused signal warnings
 `ifdef VERILATOR
-    wire _unused = &{1'b0, rs1_i_imm_sum[0]};
+    wire _unused = &{1'b0, rs1_i_imm_sum[0], id_ex_i.rs1_used, id_ex_i.rs2_used,
+        id_ex_i.rs1_addr, id_ex_i.rs2_addr};
 `endif
 
 endmodule

@@ -5,22 +5,22 @@
    <db_ref_list>
       <db_ref path="core_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="\$unit_alu_onehot_sv_921361048 " />
+            <top_module name="\$unit_alu_onehot_sv_616834539 " />
             <top_module name="core_tb" />
             <top_module name="glbl" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="510.500 ns"></ZoomStartTime>
-      <ZoomEndTime time="521.901 ns"></ZoomEndTime>
-      <Cursor1Time time="520.000 ns"></Cursor1Time>
+      <ZoomStartTime time="55.067 ns"></ZoomStartTime>
+      <ZoomEndTime time="119.568 ns"></ZoomEndTime>
+      <Cursor1Time time="113.467 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+      <ValueColumnWidth column_width="104"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="40" />
+   <WVObjectSize size="36" />
    <wvobject type="logic" fp_name="/core_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -89,6 +89,10 @@
       <obj_property name="ElementShortName">branch_taken_i</obj_property>
       <obj_property name="ObjectShortName">branch_taken_i</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/core_tb/dut/squash_if">
+      <obj_property name="ElementShortName">squash_if</obj_property>
+      <obj_property name="ObjectShortName">squash_if</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/fetch/if_id_r">
       <obj_property name="ElementShortName">if_id_r</obj_property>
       <obj_property name="ObjectShortName">if_id_r</obj_property>
@@ -98,30 +102,17 @@
       <obj_property name="ElementShortName">instr_jal_o</obj_property>
       <obj_property name="ObjectShortName">instr_jal_o</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/decode/instr_jalr_o">
-      <obj_property name="ElementShortName">instr_jalr_o</obj_property>
-      <obj_property name="ObjectShortName">instr_jalr_o</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/decode/branch_taken_o">
-      <obj_property name="ElementShortName">branch_taken_o</obj_property>
-      <obj_property name="ObjectShortName">branch_taken_o</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/decode/jal_addr_o">
       <obj_property name="ElementShortName">jal_addr_o[31:0]</obj_property>
       <obj_property name="ObjectShortName">jal_addr_o[31:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/core_tb/dut/decode/jalr_addr_o">
-      <obj_property name="ElementShortName">jalr_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">jalr_addr_o[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/core_tb/dut/decode/branch_addr_o">
-      <obj_property name="ElementShortName">branch_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">branch_addr_o[31:0]</obj_property>
+   <wvobject type="logic" fp_name="/core_tb/dut/squash_id">
+      <obj_property name="ElementShortName">squash_id</obj_property>
+      <obj_property name="ObjectShortName">squash_id</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/decode/id_ex_r">
       <obj_property name="ElementShortName">id_ex_r</obj_property>
       <obj_property name="ObjectShortName">id_ex_r</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/decode/data_rs1_i">
       <obj_property name="ElementShortName">data_rs1_i[31:0]</obj_property>
@@ -135,26 +126,18 @@
       <obj_property name="ElementShortName">instr_branch</obj_property>
       <obj_property name="ObjectShortName">instr_branch</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/decode/br_eq">
-      <obj_property name="ElementShortName">br_eq</obj_property>
-      <obj_property name="ObjectShortName">br_eq</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/decode/br_lt">
-      <obj_property name="ElementShortName">br_lt</obj_property>
-      <obj_property name="ObjectShortName">br_lt</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/decode/br_ltu">
-      <obj_property name="ElementShortName">br_ltu</obj_property>
-      <obj_property name="ObjectShortName">br_ltu</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/decode/branch_cond_true">
-      <obj_property name="ElementShortName">branch_cond_true</obj_property>
-      <obj_property name="ObjectShortName">branch_cond_true</obj_property>
+   <wvobject type="logic" fp_name="/core_tb/dut/squash_ex">
+      <obj_property name="ElementShortName">squash_ex</obj_property>
+      <obj_property name="ObjectShortName">squash_ex</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/ex/ex_ma_r">
       <obj_property name="ElementShortName">ex_ma_r</obj_property>
       <obj_property name="ObjectShortName">ex_ma_r</obj_property>
       <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/core_tb/dut/squash_ma">
+      <obj_property name="ElementShortName">squash_ma</obj_property>
+      <obj_property name="ObjectShortName">squash_ma</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/ma/ma_wb_r">
       <obj_property name="ElementShortName">ma_wb_r</obj_property>
@@ -165,9 +148,9 @@
       <obj_property name="ElementShortName">wb_reg_wr_en</obj_property>
       <obj_property name="ObjectShortName">wb_reg_wr_en</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/core_tb/dut/wb_reg_wr_data">
-      <obj_property name="ElementShortName">wb_reg_wr_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">wb_reg_wr_data[31:0]</obj_property>
+   <wvobject type="logic" fp_name="/core_tb/dut/squash_wb">
+      <obj_property name="ElementShortName">squash_wb</obj_property>
+      <obj_property name="ObjectShortName">squash_wb</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/wb_reg_wr_addr">
       <obj_property name="ElementShortName">wb_reg_wr_addr[4:0]</obj_property>

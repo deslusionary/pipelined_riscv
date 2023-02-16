@@ -48,6 +48,8 @@ module stage_decode (
     logic        dmem_wr_en;
     logic        reg_wr_en;
     logic [1:0]  reg_wr_sel;
+    logic        rs1_used;
+    logic        rs2_used;
     
     logic [31:0] u_type_imm;
     logic [31:0] i_type_imm;
@@ -64,23 +66,18 @@ module stage_decode (
         .func3_i        (instr_i[14:12]),
         .func7_i        (instr_i[30]), 
         
-        // ALU Control
         .alu_fun_o      (alu_fun), // Pass to EX stage
         .alu_op1_sel_o  (alu_op1_sel),
         .alu_op2_sel_o  (alu_op2_sel),
-
-        // Register File Writeback Control
         .reg_wr_en_o    (reg_wr_en),
         .reg_wr_sel_o   (reg_wr_sel),
-
-        // LSU
         .dmem_rd_en_o   (dmem_rd_en),
         .dmem_wr_en_o   (dmem_wr_en),
-
-        // PC Control
         .instr_jalr_o   (instr_jalr),
         .instr_jal_o    (instr_jal_o),
-        .instr_branch_o (instr_branch)
+        .instr_branch_o (instr_branch),
+        .rs1_used_o     (rs1_used),
+        .rs2_used_o     (rs2_used)
     );
     
     /* Immediate Value Generation */
@@ -138,8 +135,11 @@ module stage_decode (
         id_ex_n.instr_branch = instr_branch;
         id_ex_n.instr_jalr   = instr_jalr;
         id_ex_n.branch_addr  = branch_addr;
-        
-        id_ex_n.reg_wr_en    = reg_wr_en;
+        id_ex_n.rs1_used     = rs1_used;
+        id_ex_n.rs2_used     = rs2_used;
+        id_ex_n.rs1_addr     = instr_i[19:15];
+        id_ex_n.rs2_addr     = instr_i[24:20];
+        id_ex_n.reg_wr_en    = (instr_i[11:7] == '0) ? '0 :reg_wr_en;
         id_ex_n.reg_wr_sel   = reg_wr_sel;
         id_ex_n.reg_wr_addr  = instr_i[11:7];    
     end
