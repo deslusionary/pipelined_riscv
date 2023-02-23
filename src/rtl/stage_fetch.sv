@@ -51,8 +51,8 @@ module stage_fetch(
         // instr_branch_i are asserted at the same time! 
         // This is checked with SVA in instr_decoder
         if (instr_jalr_i)        pc_n = jalr_addr_i;
-        else if (instr_jal_i)    pc_n = jal_addr_i;
         else if (branch_taken_i) pc_n = branch_addr_i;
+        else if (instr_jal_i)    pc_n = jal_addr_i;
         else                     pc_n = pc_plus_four;
     end
     
