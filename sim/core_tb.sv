@@ -49,7 +49,7 @@ module core_tb (
         .MEM_DIN2   (dmem_wr_data),
         .MEM_WRITE2 (dmem_wr_en),
         .MEM_READ1  (imem_rd_en),
-        .MEM_READ2  (dmem_wr_en),
+        .MEM_READ2  (dmem_rd_en),
         .ERR        (),
         .MEM_DOUT1  (imem_data),
         .MEM_DOUT2  (dmem_rd_data),
@@ -58,6 +58,7 @@ module core_tb (
         .MEM_SIZE   (dmem_size),
         .MEM_SIGN   (dmem_sign)
     );
+    
 
     initial begin
         rst = 1'b1;

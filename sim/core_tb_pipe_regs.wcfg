@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="85.501 ns"></ZoomEndTime>
-      <Cursor1Time time="0.000 ns"></Cursor1Time>
+      <ZoomStartTime time="907.125 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,008.066 ns"></ZoomEndTime>
+      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="110"></NameColumnWidth>
-      <ValueColumnWidth column_width="60"></ValueColumnWidth>
+      <NameColumnWidth column_width="167"></NameColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="17" />
+   <WVObjectSize size="19" />
    <wvobject type="logic" fp_name="/core_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -28,6 +28,10 @@
    <wvobject type="logic" fp_name="/core_tb/rst">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/core_tb/imem_addr">
+      <obj_property name="ElementShortName">imem_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imem_addr[31:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/imem_data">
       <obj_property name="ElementShortName">imem_data[31:0]</obj_property>
@@ -44,6 +48,10 @@
    <wvobject type="array" fp_name="/core_tb/dut/decode/id_ex_r">
       <obj_property name="ElementShortName">id_ex_r</obj_property>
       <obj_property name="ObjectShortName">id_ex_r</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/core_tb/dut/id_ex_forwarded">
+      <obj_property name="ElementShortName">id_ex_forwarded</obj_property>
+      <obj_property name="ObjectShortName">id_ex_forwarded</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/ex/ex_ma_r">
       <obj_property name="ElementShortName">ex_ma_r</obj_property>

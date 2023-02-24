@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="911.411 ns"></ZoomStartTime>
-      <ZoomEndTime time="978.312 ns"></ZoomEndTime>
-      <Cursor1Time time="975.911 ns"></Cursor1Time>
+      <ZoomStartTime time="65,145.532 ns"></ZoomStartTime>
+      <ZoomEndTime time="65,236.860 ns"></ZoomEndTime>
+      <Cursor1Time time="65,275.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="80"></ValueColumnWidth>
+      <ValueColumnWidth column_width="76"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="53" />
+   <WVObjectSize size="52" />
    <wvobject type="logic" fp_name="/core_tb/dut/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -73,10 +73,6 @@
       <obj_property name="ElementShortName">instr_jal</obj_property>
       <obj_property name="ObjectShortName">instr_jal</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/fetch/instr_jal_i">
-      <obj_property name="ElementShortName">instr_jal_i</obj_property>
-      <obj_property name="ObjectShortName">instr_jal_i</obj_property>
-   </wvobject>
    <wvobject type="logic" fp_name="/core_tb/dut/instr_jalr">
       <obj_property name="ElementShortName">instr_jalr</obj_property>
       <obj_property name="ObjectShortName">instr_jalr</obj_property>
@@ -124,10 +120,6 @@
    <wvobject type="logic" fp_name="/core_tb/dut/stall_id">
       <obj_property name="ElementShortName">stall_id</obj_property>
       <obj_property name="ObjectShortName">stall_id</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/core_tb/dut/interlock">
-      <obj_property name="ElementShortName">interlock</obj_property>
-      <obj_property name="ObjectShortName">interlock</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/decode/riscv_decoder/opcode_i">
       <obj_property name="ElementShortName">opcode_i[6:0]</obj_property>
@@ -203,6 +195,10 @@
       <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
       <obj_property name="ObjectShortName">alu_result[31:0]</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/core_tb/dut/ex/bcg/branch_cond_true">
+      <obj_property name="ElementShortName">branch_cond_true</obj_property>
+      <obj_property name="ObjectShortName">branch_cond_true</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/core_tb/dut/ex_ma_reg">
       <obj_property name="ElementShortName">ex_ma_reg</obj_property>
       <obj_property name="ObjectShortName">ex_ma_reg</obj_property>
@@ -219,6 +215,7 @@
    <wvobject type="array" fp_name="/core_tb/dut/ma_wb_reg">
       <obj_property name="ElementShortName">ma_wb_reg</obj_property>
       <obj_property name="ObjectShortName">ma_wb_reg</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/core_tb/dut/wb_reg_wr_en">
       <obj_property name="ElementShortName">wb_reg_wr_en</obj_property>
