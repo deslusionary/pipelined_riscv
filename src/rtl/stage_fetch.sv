@@ -46,10 +46,8 @@ module stage_fetch(
     assign pc_plus_four = pc_r + 4;
     
     // Select correct next PC value
-    always_comb begin : next_pc_mux
-        // Very important that only one of instr_jal_i, instr_jalr_i, or 
-        // instr_branch_i are asserted at the same time! 
-        // This is checked with SVA in instr_decoder
+    always_comb begin : next_pc_mux 
+        // JALR and branch take priority over jal
         if (instr_jalr_i)        pc_n = jalr_addr_i;
         else if (branch_taken_i) pc_n = branch_addr_i;
         else if (instr_jal_i)    pc_n = jal_addr_i;

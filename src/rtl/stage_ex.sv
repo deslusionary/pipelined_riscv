@@ -70,7 +70,7 @@ module stage_ex (
 
         else begin
             ex_ma_n.valid = id_ex_i.valid;
-            ex_ma_n.dmem_wr_en  = id_ex_i.dmem_wr_en;
+            ex_ma_n.dmem_wr_en  = (id_ex_i.dmem_wr_en && id_ex_i.valid);
         end
 
         // Pass through signals headed to downstream stages
@@ -80,7 +80,7 @@ module stage_ex (
         
         // Memory Access Signals
         ex_ma_n.dmem_data  = id_ex_i.dmem_data;
-        ex_ma_n.dmem_rd_en = id_ex_i.dmem_rd_en;
+        ex_ma_n.dmem_rd_en = (id_ex_i.dmem_rd_en && id_ex_i.valid);
         ex_ma_n.dmem_size  = id_ex_i.func3[1:0];
         ex_ma_n.dmem_sign  = id_ex_i.func3[2];
 
